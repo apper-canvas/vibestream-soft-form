@@ -1,4 +1,6 @@
-import { getApperClient } from "@/services/apperClient"
+import React from "react";
+import { getApperClient } from "@/services/apperClient";
+import Error from "@/components/ui/Error";
 
 class SongService {
   constructor() {
@@ -233,15 +235,10 @@ class SongService {
     }
   }
 
-  async getLikedSongs(userId) {
+async getLikedSongs(userId) {
     // This would query a user_liked_songs junction table
     // For now, return empty array as table doesn't exist yet
-    try {
-      return [];
-    } catch (error) {
-      console.error("Error fetching liked songs:", error);
-      return [];
-    }
+    return [];
   }
 
   isLiked(songId, userId) {

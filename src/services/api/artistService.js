@@ -119,12 +119,8 @@ class ArtistService {
   async getFollowedArtists(userId) {
     // This would query a user_following junction table
     // For now, return empty array as table doesn't exist yet
-    try {
-      return [];
-    } catch (error) {
-      console.error("Error fetching followed artists:", error);
-      return [];
-    }
+// For now, return empty array as this feature is not yet implemented
+    return [];
   }
 
   isFollowing(artistId, userId) {
