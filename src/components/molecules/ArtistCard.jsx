@@ -17,20 +17,20 @@ const ArtistCard = ({ artist, onViewArtist }) => {
         <CardContent className="p-6">
           <div className="relative mx-auto w-24 h-24 mb-4">
             <img
-              src={artist.profileImage}
-              alt={artist.name}
+src={artist.profileImage_c || artist.profileImage}
+              alt={artist.name_c || artist.name}
               className="w-full h-full rounded-full object-cover border-4 border-gray-700 group-hover:border-accent transition-colors"
             />
             <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
 
           <h3 className="text-white font-bold text-lg mb-2 group-hover:text-accent transition-colors">
-            {artist.name}
+{artist.name_c || artist.name}
           </h3>
 
           <div className="flex items-center justify-center space-x-2 text-gray-400 text-sm mb-4">
-            <ApperIcon name="Users" className="w-4 h-4" />
-            <span>{formatPlayCount(artist.followerCount)} followers</span>
+<ApperIcon name="Users" className="w-4 h-4" />
+            <span>{formatPlayCount(artist.followerCount_c || artist.followerCount)} followers</span>
           </div>
 
           <Button

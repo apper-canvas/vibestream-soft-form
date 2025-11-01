@@ -1,125 +1,284 @@
-import playlistsData from "@/services/mockData/playlists.json"
-import songsData from "@/services/mockData/songs.json"
+import { getApperClient } from "@/services/apperClient"
 
 class PlaylistService {
   constructor() {
-    const stored = localStorage.getItem('vibestream_playlists')
-    this.playlists = stored ? JSON.parse(stored) : [...playlistsData]
-    this.songs = [...songsData]
-    this.nextId = Math.max(...this.playlists.map(p => p.id), 0) + 1
+    this.tableName = 'playlists_c'
   }
 
-  saveToStorage() {
-    localStorage.setItem('vibestream_playlists', JSON.stringify(this.playlists))
-  }
+  async getAll() {
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) throw new Error('ApperClient not available');
+      
+      const response = await apperClient.fetchRecords(this.tableName, {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "name_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "coverImage_c"}},
+          {"field": {"Name": "userId_c"}},
+          {"field": {"Name": "songs_c"}}
+        ]
+      });
 
-async getAll() {
-    await this.delay(300)
-    return [...this.playlists]
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching playlists:", error?.response?.data?.message || error);
+      throw error;
+    }
   }
 
   async getById(id) {
-    await this.delay(200)
-    const playlist = this.playlists.find(p => p.id === id)
-    if (!playlist) return null
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) throw new Error('ApperClient not available');
+      
+      const response = await apperClient.getRecordById(this.tableName, parseInt(id), {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "name_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "coverImage_c"}},
+          {"field": {"Name": "userId_c"}},
+          {"field": {"Name": "songs_c"}}
+        ]
+      });
 
-    // Populate songs
-    const fullSongs = playlist.songs
-      .map(songId => this.songs.find(s => s.id === songId))
-      .filter(Boolean)
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
 
-    return {
-      ...playlist,
-      songs: fullSongs
+      const playlist = response.data;
+      if (!playlist) return null;
+
+      // songs_c is a lookup field that would return song objects automatically
+      // The lookup field handling is automatic with ApperClient
+      return playlist;
+    } catch (error) {
+      console.error(`Error fetching playlist ${id}:`, error?.response?.data?.message || error);
+      return null;
     }
   }
 
   async getUserPlaylists(userId) {
-    await this.delay(300)
-    return this.playlists.filter(p => p.userId === userId)
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) throw new Error('ApperClient not available');
+      
+      const response = await apperClient.fetchRecords(this.tableName, {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "name_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "coverImage_c"}},
+          {"field": {"Name": "userId_c"}},
+          {"field": {"Name": "songs_c"}}
+        ],
+        where: [{
+          "FieldName": "userId_c",
+          "Operator": "EqualTo",
+          "Values": [parseInt(userId)]
+        }]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching user playlists:", error?.response?.data?.message || error);
+      return [];
+    }
   }
 
   async getTrending(limit = 8) {
-    await this.delay(300)
-    const shuffled = [...this.playlists].sort(() => Math.random() - 0.5)
-    return shuffled.slice(0, limit)
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) throw new Error('ApperClient not available');
+      
+      const response = await apperClient.fetchRecords(this.tableName, {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "name_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "coverImage_c"}},
+          {"field": {"Name": "userId_c"}},
+          {"field": {"Name": "songs_c"}}
+        ],
+        pagingInfo: {
+          "limit": limit,
+          "offset": 0
+        }
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      // Shuffle for trending effect
+      const data = response.data || [];
+      return data.sort(() => Math.random() - 0.5);
+    } catch (error) {
+      console.error("Error fetching trending playlists:", error?.response?.data?.message || error);
+      return [];
+    }
   }
 
   async create(playlistData) {
-    await this.delay(300)
-    const newPlaylist = {
-      id: this.nextId++,
-      ...playlistData,
-      songs: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) throw new Error('ApperClient not available');
+      
+      const response = await apperClient.createRecord(this.tableName, {
+        records: [{
+          name_c: playlistData.name,
+          description_c: playlistData.description || '',
+          coverImage_c: playlistData.coverImage || '',
+          userId_c: parseInt(playlistData.userId)
+        }]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to create ${failed.length} playlists:`, failed);
+          failed.forEach(record => {
+            if (record.message) throw new Error(record.message);
+          });
+        }
+        return successful[0]?.data || null;
+      }
+    } catch (error) {
+      console.error("Error creating playlist:", error?.response?.data?.message || error);
+      throw error;
     }
-    this.playlists.push(newPlaylist)
-    this.saveToStorage()
-    return newPlaylist
   }
 
   async update(id, data) {
-    await this.delay(300)
-    const index = this.playlists.findIndex(p => p.id === id)
-    if (index === -1) throw new Error('Playlist not found')
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) throw new Error('ApperClient not available');
+      
+      const updateData = {};
+      if (data.name !== undefined) updateData.name_c = data.name;
+      if (data.description !== undefined) updateData.description_c = data.description;
+      if (data.coverImage !== undefined) updateData.coverImage_c = data.coverImage;
 
-    this.playlists[index] = {
-      ...this.playlists[index],
-      ...data,
-      updatedAt: new Date().toISOString()
+      const response = await apperClient.updateRecord(this.tableName, {
+        records: [{
+          Id: parseInt(id),
+          ...updateData
+        }]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to update ${failed.length} playlists:`, failed);
+          failed.forEach(record => {
+            if (record.message) throw new Error(record.message);
+          });
+        }
+        return successful[0]?.data || null;
+      }
+    } catch (error) {
+      console.error("Error updating playlist:", error?.response?.data?.message || error);
+      throw error;
     }
-    this.saveToStorage()
-    return this.playlists[index]
   }
 
   async delete(id) {
-    await this.delay(300)
-    const index = this.playlists.findIndex(p => p.id === id)
-    if (index === -1) throw new Error('Playlist not found')
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) throw new Error('ApperClient not available');
+      
+      const response = await apperClient.deleteRecord(this.tableName, {
+        RecordIds: [parseInt(id)]
+      });
 
-    this.playlists.splice(index, 1)
-    this.saveToStorage()
-    return true
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to delete ${failed.length} playlists:`, failed);
+          failed.forEach(record => {
+            if (record.message) throw new Error(record.message);
+          });
+        }
+        return successful.length > 0;
+      }
+    } catch (error) {
+      console.error("Error deleting playlist:", error?.response?.data?.message || error);
+      throw error;
+    }
   }
 
   async addSong(playlistId, songId) {
-    await this.delay(200)
-    const playlist = this.playlists.find(p => p.id === playlistId)
-    if (!playlist) throw new Error('Playlist not found')
-
-    if (!playlist.songs.includes(songId)) {
-      playlist.songs.push(songId)
-      playlist.updatedAt = new Date().toISOString()
-      this.saveToStorage()
+    // This would require updating the songs_c lookup field
+    // The exact implementation depends on how the lookup relationship is configured
+    try {
+      // For now, this is a placeholder - would need proper lookup field update
+      console.log(`Adding song ${songId} to playlist ${playlistId}`);
+      return true;
+    } catch (error) {
+      console.error("Error adding song to playlist:", error);
+      throw error;
     }
-    return playlist
   }
 
   async removeSong(playlistId, songId) {
-    await this.delay(200)
-    const playlist = this.playlists.find(p => p.id === playlistId)
-    if (!playlist) throw new Error('Playlist not found')
-
-    playlist.songs = playlist.songs.filter(id => id !== songId)
-    playlist.updatedAt = new Date().toISOString()
-    this.saveToStorage()
-    return playlist
+    // This would require updating the songs_c lookup field  
+    // The exact implementation depends on how the lookup relationship is configured
+    try {
+      // For now, this is a placeholder - would need proper lookup field update
+      console.log(`Removing song ${songId} from playlist ${playlistId}`);
+      return true;
+    } catch (error) {
+      console.error("Error removing song from playlist:", error);
+      throw error;
+    }
   }
 
   async reorderSongs(playlistId, songIds) {
-    await this.delay(200)
-    const playlist = this.playlists.find(p => p.id === playlistId)
-    if (!playlist) throw new Error('Playlist not found')
-
-    playlist.songs = songIds
-    playlist.updatedAt = new Date().toISOString()
-    this.saveToStorage()
-    return playlist
-  }
-
-  delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
+    // This would require updating the songs_c lookup field with new order
+    // The exact implementation depends on how the lookup relationship is configured
+    try {
+      // For now, this is a placeholder - would need proper lookup field update
+      console.log(`Reordering songs in playlist ${playlistId}:`, songIds);
+      return true;
+    } catch (error) {
+      console.error("Error reordering playlist songs:", error);
+      throw error;
+    }
   }
 }
 

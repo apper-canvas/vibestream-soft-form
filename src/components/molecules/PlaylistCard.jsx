@@ -15,8 +15,8 @@ const PlaylistCard = ({ playlist, onViewPlaylist }) => {
       <Card className="overflow-hidden hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300">
         <div className="relative">
           <img
-            src={playlist.coverImage}
-            alt={playlist.name}
+src={playlist.coverImage_c || playlist.coverImage}
+            alt={playlist.name_c || playlist.name}
             className="w-full aspect-square object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
@@ -32,17 +32,17 @@ const PlaylistCard = ({ playlist, onViewPlaylist }) => {
           </div>
           <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1">
             <span className="text-white text-xs font-medium">
-              {playlist.songCount} songs
+{playlist.songs_c?.length || playlist.songCount || 0} songs
             </span>
           </div>
         </div>
 
         <CardContent className="p-4">
-          <h3 className="text-white font-semibold text-lg truncate group-hover:text-primary transition-colors">
-            {playlist.name}
+<h3 className="text-white font-semibold text-lg truncate group-hover:text-primary transition-colors">
+            {playlist.name_c || playlist.name}
           </h3>
           <p className="text-gray-400 text-sm mt-1 line-clamp-2">
-            {playlist.description}
+            {playlist.description_c || playlist.description}
           </p>
         </CardContent>
       </Card>

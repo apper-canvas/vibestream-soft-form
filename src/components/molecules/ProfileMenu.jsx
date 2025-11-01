@@ -1,17 +1,19 @@
-import { useState, useRef, useEffect } from "react"
-import { useDispatch } from "react-redux"
-import { useNavigate } from "react-router-dom"
-import { motion, AnimatePresence } from "framer-motion"
-import ApperIcon from "@/components/ApperIcon"
-import { logout } from "@/store/slices/authSlice"
-import { clearProfile } from "@/store/slices/userSlice"
-import { toast } from "react-toastify"
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { useAuth } from "@/layouts/Root";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import { clearProfile } from "@/store/slices/userSlice";
+import { logout } from "@/store/slices/authSlice";
 
 const ProfileMenu = ({ user }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const menuRef = useRef(null)
+  const { logout: apperLogout } = useAuth()
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const [isOpen, setIsOpen] = useState(false)
+  const menuRef = useRef(null)
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -24,13 +26,18 @@ const ProfileMenu = ({ user }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
-  const handleLogout = () => {
-    dispatch(logout())
-    dispatch(clearProfile())
-    toast.success("Logged out successfully")
-    navigate("/")
+  const handleLogout = async () => {
+    try {
+      await apperLogout()
+      toast.success("Logged out successfully")
+    } catch (error) {
+      console.error("Logout error:", error)
+      toast.error("Failed to logout")
+    }
     setIsOpen(false)
   }
+
+  if (!user) return null
 
   return (
     <div className="relative" ref={menuRef}>
@@ -39,62 +46,75 @@ const ProfileMenu = ({ user }) => {
         className="flex items-center space-x-3 px-4 py-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
       >
         <img
-          src={user.avatar}
-          alt={user.name}
-          className="w-8 h-8 rounded-full"
+          src={user.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName + ' ' + user.lastName)}&background=1DB954&color=fff`}
+          alt={`${user.firstName} ${user.lastName}`}
+          className="w-8 h-8 rounded-full object-cover"
         />
-        <span className="text-white font-medium">{user.name}</span>
-        <ApperIcon
-          name={isOpen ? "ChevronUp" : "ChevronDown"}
-          size={16}
-          className="text-gray-400"
+        <span className="text-white text-sm font-medium hidden md:block">
+          {user.firstName} {user.lastName}
+        </span>
+        <ApperIcon 
+          name={isOpen ? "ChevronUp" : "ChevronDown"} 
+          className="w-4 h-4 text-gray-400 hidden md:block" 
         />
       </button>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="absolute right-0 mt-2 w-64 bg-surface border border-gray-700 rounded-lg shadow-xl overflow-hidden"
+            initial={{ opacity: 0, scale: 0.95, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -10 }}
+            className="absolute right-0 mt-2 w-64 bg-gray-900 rounded-xl border border-gray-700 shadow-2xl z-50 overflow-hidden"
           >
-            <div className="p-4 border-b border-gray-700">
+            {/* User Info */}
+            <div className="px-4 py-3 border-b border-gray-700">
               <div className="flex items-center space-x-3">
                 <img
-                  src={user.avatar}
-                  alt={user.name}
-                  className="w-12 h-12 rounded-full"
+                  src={user.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName + ' ' + user.lastName)}&background=1DB954&color=fff`}
+                  alt={`${user.firstName} ${user.lastName}`}
+                  className="w-12 h-12 rounded-full object-cover"
                 />
                 <div className="flex-1">
-                  <p className="text-white font-semibold">{user.name}</p>
-                  <p className="text-gray-400 text-sm">{user.email}</p>
+                  <p className="text-white font-semibold">{user.firstName} {user.lastName}</p>
+                  <p className="text-gray-400 text-sm">{user.emailAddress}</p>
                 </div>
-              </div>
-              <div className="mt-3 flex items-center justify-center px-3 py-1.5 bg-gradient-to-r from-primary to-accent rounded-full">
-                <ApperIcon name="Crown" size={14} className="text-white mr-1.5" />
-                <span className="text-white text-xs font-semibold">Premium Member</span>
               </div>
             </div>
 
-            <div className="p-2">
+            {/* Menu Items */}
+            <div className="py-2">
               <button
                 onClick={() => {
-                  toast.info("Account settings coming soon!")
+                  navigate('/profile')
                   setIsOpen(false)
                 }}
-                className="w-full flex items-center space-x-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+                className="w-full flex items-center space-x-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+              >
+                <ApperIcon name="User" size={18} />
+                <span>Profile</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  navigate('/settings')
+                  setIsOpen(false)
+                }}
+                className="w-full flex items-center space-x-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
               >
                 <ApperIcon name="Settings" size={18} />
-                <span>Account Settings</span>
+                <span>Settings</span>
               </button>
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center space-x-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
-              >
-                <ApperIcon name="LogOut" size={18} />
-                <span>Log Out</span>
-              </button>
+
+              <div className="border-t border-gray-700 mt-2 pt-2">
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center space-x-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+                >
+                  <ApperIcon name="LogOut" size={18} />
+                  <span>Log Out</span>
+                </button>
+              </div>
             </div>
           </motion.div>
         )}

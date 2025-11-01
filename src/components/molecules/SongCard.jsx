@@ -28,8 +28,8 @@ const SongCard = ({ song, onPlay, isPlaying = false, isPreviewing = false, onPre
       <div className="flex items-center space-x-4">
         <div className="relative">
           <img
-            src={song.albumArt}
-            alt={song.album}
+src={song.albumArt_c || song.albumArt}
+            alt={song.album_c || song.album}
             className="w-16 h-16 rounded-lg object-cover"
           />
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
@@ -49,19 +49,19 @@ onClick={() => onPlay(song)}
 
         <div className="flex-1 min-w-0">
           <h4 className="text-white font-medium truncate group-hover:text-primary transition-colors">
-            {song.title}
+{song.title_c || song.title}
           </h4>
-          <p className="text-gray-400 text-sm truncate">{song.artist}</p>
+          <p className="text-gray-400 text-sm truncate">{song.artist_c || song.artist}</p>
           {showPlayCount && (
             <p className="text-gray-500 text-xs">
-              {formatPlayCount(song.playCount)} plays
+              {formatPlayCount(song.playCount_c || song.playCount)} plays
             </p>
           )}
         </div>
 
         <div className="text-right space-y-1">
           <div className="text-gray-400 text-sm">
-            {formatDuration(song.duration)}
+{formatDuration(song.duration_c || song.duration)}
           </div>
           <Button
             size="icon"

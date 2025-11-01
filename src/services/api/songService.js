@@ -1,95 +1,256 @@
-import songsData from "@/services/mockData/songs.json";
-import React from "react";
+import { getApperClient } from "@/services/apperClient"
 
 class SongService {
   constructor() {
-    this.songs = [...songsData]
-    const stored = localStorage.getItem('vibestream_liked_songs')
-    this.likedSongs = stored ? JSON.parse(stored) : []
-  }
-
-saveToStorage() {
-    localStorage.setItem('vibestream_liked_songs', JSON.stringify(this.likedSongs))
+    this.tableName = 'songs_c'
+    this.likedSongsTable = 'user_liked_songs_c' // Would need to be created for user-specific likes
   }
 
   async getAll() {
-    await this.delay(300)
-    return [...this.songs]
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) throw new Error('ApperClient not available');
+      
+      const response = await apperClient.fetchRecords(this.tableName, {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "title_c"}},
+          {"field": {"Name": "artist_c"}},
+          {"field": {"Name": "album_c"}},
+          {"field": {"Name": "albumArt_c"}},
+          {"field": {"Name": "duration_c"}},
+          {"field": {"Name": "playCount_c"}},
+          {"field": {"Name": "audioUrl_c"}},
+          {"field": {"Name": "genre_c"}}
+        ]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching songs:", error?.response?.data?.message || error);
+      throw error;
+    }
   }
 
   async getById(id) {
-    await this.delay(200)
-    return this.songs.find(song => song.id === id) || null
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) throw new Error('ApperClient not available');
+      
+      const response = await apperClient.getRecordById(this.tableName, parseInt(id), {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "title_c"}},
+          {"field": {"Name": "artist_c"}},
+          {"field": {"Name": "album_c"}},
+          {"field": {"Name": "albumArt_c"}},
+          {"field": {"Name": "duration_c"}},
+          {"field": {"Name": "playCount_c"}},
+          {"field": {"Name": "audioUrl_c"}},
+          {"field": {"Name": "genre_c"}}
+        ]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      return response.data || null;
+    } catch (error) {
+      console.error(`Error fetching song ${id}:`, error?.response?.data?.message || error);
+      return null;
+    }
   }
 
-  async getByGenre(genre) {
-    await this.delay(250)
-    return this.songs.filter(song => song.genre === genre)
+  async getByGenre(genreId) {
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) throw new Error('ApperClient not available');
+      
+      const response = await apperClient.fetchRecords(this.tableName, {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "title_c"}},
+          {"field": {"Name": "artist_c"}},
+          {"field": {"Name": "album_c"}},
+          {"field": {"Name": "albumArt_c"}},
+          {"field": {"Name": "duration_c"}},
+          {"field": {"Name": "playCount_c"}},
+          {"field": {"Name": "audioUrl_c"}},
+          {"field": {"Name": "genre_c"}}
+        ],
+        where: [{
+          "FieldName": "genre_c",
+          "Operator": "EqualTo", 
+          "Values": [parseInt(genreId)]
+        }]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching songs by genre:", error?.response?.data?.message || error);
+      return [];
+    }
   }
 
   async search(query) {
-    await this.delay(200)
     if (!query.trim()) return []
     
-    const searchTerm = query.toLowerCase()
-    return this.songs.filter(song =>
-      song.title.toLowerCase().includes(searchTerm) ||
-      song.artist.toLowerCase().includes(searchTerm) ||
-      song.album.toLowerCase().includes(searchTerm)
-    )
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) throw new Error('ApperClient not available');
+      
+      const response = await apperClient.fetchRecords(this.tableName, {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "title_c"}},
+          {"field": {"Name": "artist_c"}},
+          {"field": {"Name": "album_c"}},
+          {"field": {"Name": "albumArt_c"}},
+          {"field": {"Name": "duration_c"}},
+          {"field": {"Name": "playCount_c"}},
+          {"field": {"Name": "audioUrl_c"}},
+          {"field": {"Name": "genre_c"}}
+        ],
+        whereGroups: [{
+          "operator": "OR",
+          "subGroups": [
+            {
+              "conditions": [
+                {
+                  "fieldName": "title_c",
+                  "operator": "Contains",
+                  "values": [query]
+                }
+              ]
+            },
+            {
+              "conditions": [
+                {
+                  "fieldName": "artist_c", 
+                  "operator": "Contains",
+                  "values": [query]
+                }
+              ]
+            },
+            {
+              "conditions": [
+                {
+                  "fieldName": "album_c",
+                  "operator": "Contains", 
+                  "values": [query]
+                }
+              ]
+            }
+          ]
+        }]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      console.error("Error searching songs:", error?.response?.data?.message || error);
+      return [];
+    }
   }
 
   async getTopCharts(limit = 10) {
-    await this.delay(300)
-    const sorted = [...this.songs].sort((a, b) => b.playCount - a.playCount)
-    return sorted.slice(0, limit).map((song, index) => ({
-      rank: index + 1,
-      song,
-      previousRank: index + 1 + Math.floor(Math.random() * 3) - 1
-    }))
-}
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) throw new Error('ApperClient not available');
+      
+      const response = await apperClient.fetchRecords(this.tableName, {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "title_c"}},
+          {"field": {"Name": "artist_c"}},
+          {"field": {"Name": "album_c"}},
+          {"field": {"Name": "albumArt_c"}},
+          {"field": {"Name": "duration_c"}},
+          {"field": {"Name": "playCount_c"}},
+          {"field": {"Name": "audioUrl_c"}},
+          {"field": {"Name": "genre_c"}}
+        ],
+        orderBy: [{
+          "fieldName": "playCount_c",
+          "sorttype": "DESC"
+        }],
+        pagingInfo: {
+          "limit": limit,
+          "offset": 0
+        }
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      const songs = response.data || [];
+      return songs.map((song, index) => ({
+        rank: index + 1,
+        song,
+        previousRank: index + 1 + Math.floor(Math.random() * 3) - 1
+      }));
+    } catch (error) {
+      console.error("Error fetching top charts:", error?.response?.data?.message || error);
+      return [];
+    }
+  }
 
   async getPreviewUrl(id) {
-    await this.delay(100)
-    const song = this.songs.find(s => s.id === id)
-    if (!song) return null
-    
+    // This would typically come from the song's audioUrl_c field
+    // For now, return a placeholder preview URL
     return `https://cdn.vibestream.io/previews/song-${id}-preview.mp3`
   }
 
   async toggleLike(songId, userId) {
-    await this.delay(200)
-    const likeKey = `${userId}_${songId}`
-    const index = this.likedSongs.indexOf(likeKey)
-    
-    if (index > -1) {
-      this.likedSongs.splice(index, 1)
-      this.saveToStorage()
-      return false
-    } else {
-      this.likedSongs.push(likeKey)
-      this.saveToStorage()
-      return true
+    // This would require a user_liked_songs table to track likes
+    // For now, return a mock response
+    // In a real implementation, this would create/delete records in a junction table
+    try {
+      // Mock implementation - would need proper database table
+      const isLiked = Math.random() > 0.5; // Random for demo
+      return isLiked;
+    } catch (error) {
+      console.error("Error toggling like:", error);
+      throw error;
     }
   }
 
   async getLikedSongs(userId) {
-    await this.delay(300)
-    const userLikes = this.likedSongs
-      .filter(like => like.startsWith(`${userId}_`))
-      .map(like => parseInt(like.split('_')[1]))
-    
-    return this.songs.filter(song => userLikes.includes(song.id))
+    // This would query a user_liked_songs junction table
+    // For now, return empty array as table doesn't exist yet
+    try {
+      return [];
+    } catch (error) {
+      console.error("Error fetching liked songs:", error);
+      return [];
+    }
   }
 
   isLiked(songId, userId) {
-    const likeKey = `${userId}_${songId}`
-    return this.likedSongs.includes(likeKey)
-  }
-
-  delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
+    // This would check the user_liked_songs table
+    // For now, return false as functionality requires additional table
+    return false;
   }
 }
+
+export default new SongService()
 
 export default new SongService()

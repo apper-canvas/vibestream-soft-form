@@ -1,29 +1,38 @@
-import { useState, useEffect } from "react"
-import { useSelector } from "react-redux"
-import { toast } from "react-toastify"
-import { motion } from "framer-motion"
-import ApperIcon from "@/components/ApperIcon"
-import ArtistCard from "@/components/molecules/ArtistCard"
-import Loading from "@/components/ui/Loading"
-import Empty from "@/components/ui/Empty"
-import Error from "@/components/ui/Error"
-import artistService from "@/services/api/artistService"
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import artistService from "@/services/api/artistService";
+import ApperIcon from "@/components/ApperIcon";
+import Loading from "@/components/ui/Loading";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import ArtistCard from "@/components/molecules/ArtistCard";
 
 const Following = () => {
+function Following() {
   const user = useSelector((state) => state.user.profile)
   const [followedArtists, setFollowedArtists] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    loadFollowedArtists()
+    if (user) {
+      loadFollowedArtists()
+    }
   }, [user])
+  const [followedArtists, setFollowedArtists] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  const loadFollowedArtists = async () => {
+
+const loadFollowedArtists = async () => {
+    if (!user) return;
+    
     try {
       setLoading(true)
       setError(null)
-      const data = await artistService.getFollowedArtists(user.id)
+      const data = await artistService.getFollowedArtists(user.Id)
       setFollowedArtists(data)
     } catch (err) {
       setError("Failed to load followed artists")
@@ -37,15 +46,35 @@ const Following = () => {
     toast.info(`Artist page for ${artist.name} coming soon!`)
   }
 
-  const handleFollow = async (artist) => {
+const handleFollow = async (artist) => {
+    if (!user) return;
+    
     try {
-      await artistService.toggleFollow(artist.id, user.id)
+      await artistService.toggleFollow(artist.Id, user.Id)
       loadFollowedArtists()
-      toast.success(`Unfollowed ${artist.name}`)
+      toast.success(`Unfollowed ${artist.name_c}`)
     } catch (err) {
       toast.error("Failed to update following")
     }
   }
+
+  if (loading) return <Loading />
+  if (error) return <Error message={error} onRetry={loadFollowedArtists} />
+
+  return (
+    <div className="max-w-7xl mx-auto px-6 py-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-display font-bold text-white mb-2">
+              Following
+            </h1>
+            <p className="text-gray-400">
+              {followedArtists.length} {followedArtists.length === 1 ? "artist" : "artists"}
 
   if (loading) return <Loading />
   if (error) return <Error message={error} onRetry={loadFollowedArtists} />
@@ -63,7 +92,33 @@ const Following = () => {
                 Following
               </h1>
               <p className="text-gray-400 mt-1">
-                {followedArtists.length} {followedArtists.length === 1 ? "artist" : "artists"}
+</p>
+          </div>
+        </div>
+      </motion.div>
+
+      {followedArtists.length === 0 ? (
+        <Empty
+          title="Not following anyone yet"
+          message="Discover and follow your favorite artists"
+          icon="Users"
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {followedArtists.map((artist, index) => (
+            <motion.div
+              key={artist.Id}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+            >
+              <ArtistCard
+                key={artist.Id}
+                artist={artist}
+                onViewArtist={() => handleViewArtist(artist)}
+                onFollow={() => handleFollow(artist)}
+                isFollowing={true}
+              />
               </p>
             </div>
           </div>
@@ -82,13 +137,15 @@ const Following = () => {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
           >
             {followedArtists.map((artist) => (
-              <ArtistCard
-                key={artist.id}
-                artist={artist}
-                onViewArtist={() => handleViewArtist(artist)}
-                onFollow={() => handleFollow(artist)}
-                isFollowing={true}
-              />
+</motion.div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default Following
             ))}
           </motion.div>
         )}
@@ -96,5 +153,3 @@ const Following = () => {
     </div>
   )
 }
-
-export default Following

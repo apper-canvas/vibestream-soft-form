@@ -1,14 +1,15 @@
-import { Outlet } from "react-router-dom"
-import { useSelector } from "react-redux"
-import Sidebar from "@/components/molecules/Sidebar"
-import ProfileMenu from "@/components/molecules/ProfileMenu"
-import ApperIcon from "@/components/ApperIcon"
+import { Outlet } from "react-router-dom";
+import { useSelector } from "react-redux";
+import React from "react";
+import ApperIcon from "@/components/ApperIcon";
+import ProfileMenu from "@/components/molecules/ProfileMenu";
+import Sidebar from "@/components/molecules/Sidebar";
 
 const Layout = () => {
-  const user = useSelector((state) => state.user.profile)
+  const user = useSelector((state) => state.user.profile);
 
   return (
-<div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-background flex">
       {/* Bottom Navigation */}
       <Sidebar />
 
@@ -28,13 +29,13 @@ const Layout = () => {
           </div>
         </header>
 
-{/* Page Content */}
+        {/* Page Content */}
         <main className="flex-1 overflow-y-auto pb-20">
           <Outlet />
         </main>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

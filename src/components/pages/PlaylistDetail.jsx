@@ -1,22 +1,22 @@
-import { useState, useEffect } from "react"
-import { useSelector } from "react-redux"
-import { useParams, useNavigate } from "react-router-dom"
-import { toast } from "react-toastify"
-import { motion } from "framer-motion"
-import ApperIcon from "@/components/ApperIcon"
-import Button from "@/components/atoms/Button"
-import SongCard from "@/components/molecules/SongCard"
-import Loading from "@/components/ui/Loading"
-import Empty from "@/components/ui/Empty"
-import Error from "@/components/ui/Error"
-import usePlayback from "@/hooks/usePlayback"
-import playlistService from "@/services/api/playlistService"
-import songService from "@/services/api/songService"
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import songService from "@/services/api/songService";
+import playlistService from "@/services/api/playlistService";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Loading from "@/components/ui/Loading";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import SongCard from "@/components/molecules/SongCard";
+import usePlayback from "@/hooks/usePlayback";
 
-const PlaylistDetail = () => {
+function PlaylistDetail() {
   const { id } = useParams()
-  const user = useSelector((state) => state.user.profile)
   const navigate = useNavigate()
+  const user = useSelector((state) => state.user.profile)
   const playback = usePlayback()
   const [playlist, setPlaylist] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -25,7 +25,9 @@ const PlaylistDetail = () => {
   const [editForm, setEditForm] = useState({ name: "", description: "" })
 
   useEffect(() => {
-    loadPlaylist()
+    if (id) {
+      loadPlaylist()
+    }
   }, [id])
 
   const loadPlaylist = async () => {
@@ -38,7 +40,7 @@ const PlaylistDetail = () => {
         return
       }
       setPlaylist(data)
-      setEditForm({ name: data.name, description: data.description })
+      setEditForm({ name: data.name_c, description: data.description_c })
     } catch (err) {
       setError("Failed to load playlist")
       toast.error("Failed to load playlist")
@@ -52,8 +54,10 @@ const PlaylistDetail = () => {
   }
 
   const handleLike = async (song) => {
+    if (!user) return
+    
     try {
-      const isLiked = await songService.toggleLike(song.id, user.id)
+      const isLiked = await songService.toggleLike(song.Id, user.Id)
       toast.success(isLiked ? "Added to Liked Songs" : "Removed from Liked Songs")
     } catch (err) {
       toast.error("Failed to update liked songs")
@@ -62,7 +66,7 @@ const PlaylistDetail = () => {
 
   const handleRemoveSong = async (songId) => {
     try {
-      await playlistService.removeSong(playlist.id, songId)
+      await playlistService.removeSong(playlist.Id, songId)
       toast.success("Song removed from playlist")
       loadPlaylist()
     } catch (err) {
@@ -72,7 +76,7 @@ const PlaylistDetail = () => {
 
   const handleSaveEdit = async () => {
     try {
-      await playlistService.update(playlist.id, editForm)
+      await playlistService.update(playlist.Id, editForm)
       toast.success("Playlist updated successfully")
       setIsEditing(false)
       loadPlaylist()
@@ -81,13 +85,13 @@ const PlaylistDetail = () => {
     }
   }
 
-  const handleDelete = async () => {
-    if (!confirm(`Are you sure you want to delete "${playlist.name}"?`)) {
+  const handleDeletePlaylist = async () => {
+    if (!confirm(`Are you sure you want to delete "${playlist?.name_c}"?`)) {
       return
     }
 
     try {
-      await playlistService.delete(playlist.id)
+      await playlistService.delete(playlist.Id)
       toast.success("Playlist deleted successfully")
       navigate("/playlists")
     } catch (err) {
@@ -97,33 +101,36 @@ const PlaylistDetail = () => {
 
   if (loading) return <Loading />
   if (error) return <Error message={error} onRetry={loadPlaylist} />
-  if (!playlist) return <Error message="Playlist not found" />
+  if (!playlist) return <Empty title="Playlist not found" message="The playlist you're looking for doesn't exist." />
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Header */}
       <div className="h-80 bg-gradient-to-b from-primary/20 to-background relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background" />
         <div className="relative max-w-7xl mx-auto px-8 pt-20 pb-8 flex items-end space-x-6">
           <motion.img
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            src={playlist.coverImage}
-            alt={playlist.name}
             className="w-52 h-52 rounded-lg shadow-2xl"
+            src={playlist.coverImage_c}
+            alt={playlist.name_c}
           />
           <div className="flex-1 pb-4">
             <p className="text-sm text-gray-400 uppercase tracking-wide mb-2">Playlist</p>
             {isEditing ? (
               <input
+                type="text"
                 value={editForm.name}
                 onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                 className="text-5xl font-display font-bold text-white mb-4 bg-transparent border-b border-gray-600 focus:border-primary outline-none"
               />
             ) : (
               <h1 className="text-5xl font-display font-bold text-white mb-4">
-                {playlist.name}
+                {playlist.name_c}
               </h1>
             )}
+
             {isEditing ? (
               <textarea
                 value={editForm.description}
@@ -132,89 +139,108 @@ const PlaylistDetail = () => {
                 rows={2}
               />
             ) : (
-              <p className="text-gray-300 mb-4">{playlist.description}</p>
+              <p className="text-gray-300 mb-4">{playlist.description_c}</p>
             )}
+
             <div className="flex items-center space-x-4 text-sm text-gray-400">
-              <span>{user.name}</span>
+              <span>{user?.name || 'Unknown User'}</span>
               <span>•</span>
-              <span>{playlist.songs.length} songs</span>
+              <span>{playlist.songs_c?.length || 0} songs</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-8 py-8">
-        <div className="flex items-center space-x-4 mb-8">
-          {!isEditing ? (
-            <>
+      {/* Action Bar */}
+      <div className="sticky top-16 z-30 bg-surface/95 backdrop-blur-md border-b border-gray-800">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
               <Button
-                onClick={() => setIsEditing(true)}
-                variant="outline"
+                size="lg"
+                className="bg-primary hover:bg-primary/80"
+                onClick={() => playlist.songs_c?.[0] && handlePlay(playlist.songs_c[0])}
               >
-                <ApperIcon name="Edit" size={18} className="mr-2" />
-                Edit Playlist
+                <ApperIcon name="Play" className="w-5 h-5 mr-2" />
+                Play All
               </Button>
-              <Button
-                onClick={handleDelete}
-                variant="outline"
-                className="border-red-600 text-red-600 hover:bg-red-600 hover:text-white"
-              >
-                <ApperIcon name="Trash2" size={18} className="mr-2" />
-                Delete Playlist
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                onClick={handleSaveEdit}
-                variant="gradient"
-              >
-                <ApperIcon name="Check" size={18} className="mr-2" />
-                Save Changes
-              </Button>
-              <Button
-                onClick={() => {
-                  setIsEditing(false)
-                  setEditForm({ name: playlist.name, description: playlist.description })
-                }}
-                variant="outline"
-              >
-                Cancel
-              </Button>
-            </>
-          )}
-        </div>
+            </div>
 
-        {playlist.songs.length === 0 ? (
-          <Empty
-            icon="Music"
-            title="No songs in this playlist"
-            description="Add songs to start building your collection"
-          />
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          >
-            {playlist.songs.map((song) => (
-              <div key={song.id} className="relative">
+            <div className="flex items-center space-x-2">
+              {isEditing ? (
+                <>
+                  <Button
+                    variant="outline"
+                    onClick={handleSaveEdit}
+                    className="text-primary border-primary hover:bg-primary/10"
+                  >
+                    <ApperIcon name="Save" className="w-4 h-4 mr-2" />
+                    Save
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsEditing(false)
+                      setEditForm({ name: playlist.name_c, description: playlist.description_c })
+                    }}
+                    className="text-gray-400 border-gray-600 hover:bg-gray-800"
+                  >
+                    Cancel
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="outline" 
+                    onClick={() => setIsEditing(true)}
+                    className="text-gray-400 border-gray-600 hover:bg-gray-800"
+                  >
+                    <ApperIcon name="Edit2" className="w-4 h-4 mr-2" />
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleDeletePlaylist}
+                    className="text-red-400 border-red-600 hover:bg-red-900/20"
+                  >
+                    <ApperIcon name="Trash2" className="w-4 h-4 mr-2" />
+                    Delete
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Songs List */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {playlist.songs_c && playlist.songs_c.length > 0 ? (
+          <div className="space-y-2">
+            {playlist.songs_c.map((song) => (
+              <div key={song.Id} className="relative">
                 <SongCard
                   song={song}
                   onPlay={() => handlePlay(song)}
                   onLike={() => handleLike(song)}
-                  isPlaying={playback.currentSong?.id === song.id && playback.isPlaying}
-                  isLiked={songService.isLiked(song.id, user.id)}
+                  isPlaying={playback.currentSong?.Id === song.Id && playback.isPlaying}
+                  isLiked={songService.isLiked(song.Id, user?.Id)}
                 />
                 <button
-                  onClick={() => handleRemoveSong(song.id)}
+                  onClick={() => handleRemoveSong(song.Id)}
                   className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-600 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
                 >
-                  <ApperIcon name="X" size={16} className="text-white" />
+                  <ApperIcon name="X" className="w-4 h-4 text-white" />
                 </button>
               </div>
             ))}
-          </motion.div>
+          </div>
+        ) : (
+          <Empty
+            title="No songs in this playlist"
+            message="Start building your playlist by adding some songs"
+            icon="Music"
+          />
         )}
       </div>
     </div>

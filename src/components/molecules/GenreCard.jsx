@@ -2,7 +2,8 @@ import { motion } from "framer-motion"
 import ApperIcon from "@/components/ApperIcon"
 
 const GenreCard = ({ genre, onSelectGenre }) => {
-  const gradientClass = `genre-${genre.name.toLowerCase().replace(/[^a-z]/g, '')}`
+const genreName = genre.name_c || genre.name
+  const gradientClass = `genre-${genreName.toLowerCase().replace(/[^a-z]/g, '')}`
 
   return (
     <motion.div
@@ -15,12 +16,12 @@ const GenreCard = ({ genre, onSelectGenre }) => {
     >
       <div className={`${gradientClass} rounded-xl p-6 h-32 flex flex-col justify-between relative overflow-hidden transition-all duration-200 hover:shadow-xl`}>
         <div className="relative z-10">
-          <h3 className="text-white font-bold text-xl mb-2">{genre.name}</h3>
+<h3 className="text-white font-bold text-xl mb-2">{genreName}</h3>
         </div>
         
         <div className="relative z-10 flex justify-end">
           <ApperIcon 
-            name={genre.icon} 
+name={genre.icon_c || genre.icon}
             className="w-8 h-8 text-white/80 group-hover:text-white group-hover:scale-110 transition-all duration-200" 
           />
         </div>
