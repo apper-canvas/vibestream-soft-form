@@ -26,6 +26,8 @@ const LoadingFallback = () => (
   </div>
 );
 
+import Loading from '@/components/ui/Loading';
+
 const createRoute = ({
   path,
   index,
@@ -45,9 +47,9 @@ const createRoute = ({
   const config = getRouteConfig(configPath);
   const finalAccess = access || config?.allow;
 
-  const route = {
+const route = {
     ...(index ? { index: true } : { path }),
-    element: element ? <Suspense fallback={<LoadingFallback />}>{element}</Suspense> : element,
+    element: element ? <Suspense fallback={<Loading />}>{element}</Suspense> : element,
     handle: {
       access: finalAccess,
       ...meta,
