@@ -1,0 +1,56 @@
+[
+  {
+    "id": "1",
+    "name": "Pop",
+    "gradientColors": ["#FF6B9D", "#FFA726"],
+    "icon": "Music"
+  },
+  {
+    "id": "2",
+    "name": "Rock",
+    "gradientColors": ["#DC2626", "#1F2937"],
+    "icon": "Zap"
+  },
+  {
+    "id": "3",
+    "name": "Hip Hop",
+    "gradientColors": ["#FCD34D", "#8B5CF6"],
+    "icon": "Mic"
+  },
+  {
+    "id": "4",
+    "name": "Jazz",
+    "gradientColors": ["#3B82F6", "#F59E0B"],
+    "icon": "Piano"
+  },
+  {
+    "id": "5",
+    "name": "Classical",
+    "gradientColors": ["#D97706", "#FEF3C7"],
+    "icon": "Music2"
+  },
+  {
+    "id": "6",
+    "name": "Electronic",
+    "gradientColors": ["#06B6D4", "#EC4899"],
+    "icon": "Radio"
+  },
+  {
+    "id": "7",
+    "name": "R&B",
+    "gradientColors": ["#8B5CF6", "#F472B6"],
+    "icon": "Heart"
+  },
+  {
+    "id": "8",
+    "name": "Country",
+    "gradientColors": ["#92400E", "#16A34A"],
+    "icon": "Guitar"
+  },
+  {
+    "id": "9",
+    "name": "Indie",
+    "gradientColors": ["#0D9488", "#EA580C"],
+    "icon": "Headphones"
+  }
+]

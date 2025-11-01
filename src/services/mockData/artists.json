@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1",
+    "name": "Luna Waves",
+    "profileImage": "https://images.unsplash.com/photo-1494790108755-2616c0763013?w=300&h=300&fit=crop&crop=face",
+    "followerCount": 2800000,
+    "topSongs": ["1", "11"],
+    "bio": "Indie pop sensation with dreamy melodies"
+  },
+  {
+    "id": "2",
+    "name": "The Vibes",
+    "profileImage": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=300&fit=crop",
+    "followerCount": 1900000,
+    "topSongs": ["2"],
+    "bio": "Electronic duo pushing musical boundaries"
+  },
+  {
+    "id": "3",
+    "name": "Steel Phoenix",
+    "profileImage": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face",
+    "followerCount": 1500000,
+    "topSongs": ["3"],
+    "bio": "Rock band with explosive energy"
+  },
+  {
+    "id": "4",
+    "name": "Sunset Melody",
+    "profileImage": "https://images.unsplash.com/photo-1488161628813-04466f872be2?w=300&h=300&fit=crop&crop=face",
+    "followerCount": 3100000,
+    "topSongs": ["4"],
+    "bio": "Singer-songwriter creating magical moments"
+  },
+  {
+    "id": "5",
+    "name": "Urban Flow",
+    "profileImage": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face",
+    "followerCount": 2200000,
+    "topSongs": ["5", "13"],
+    "bio": "Hip hop artist with conscious lyrics"
+  },
+  {
+    "id": "6",
+    "name": "Jazz Collective",
+    "profileImage": "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop",
+    "followerCount": 850000,
+    "topSongs": ["6", "14"],
+    "bio": "Traditional jazz with modern flair"
+  }
+]

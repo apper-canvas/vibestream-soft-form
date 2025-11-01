@@ -1,0 +1,167 @@
+[
+  {
+    "id": "1",
+    "title": "Midnight Dreams",
+    "artist": "Luna Waves",
+    "album": "Neon Nights",
+    "duration": 210,
+    "albumArt": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
+    "audioUrl": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+    "playCount": 2840000,
+    "genre": "Pop"
+  },
+  {
+    "id": "2",
+    "title": "Electric Soul",
+    "artist": "The Vibes",
+    "album": "Digital Hearts",
+    "duration": 195,
+    "albumArt": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=300&fit=crop",
+    "audioUrl": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+    "playCount": 1960000,
+    "genre": "Electronic"
+  },
+  {
+    "id": "3",
+    "title": "Thunder Road",
+    "artist": "Steel Phoenix",
+    "album": "Highway Legends",
+    "duration": 240,
+    "albumArt": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&h=300&fit=crop",
+    "audioUrl": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+    "playCount": 1720000,
+    "genre": "Rock"
+  },
+  {
+    "id": "4",
+    "title": "Golden Hour",
+    "artist": "Sunset Melody",
+    "album": "Warm Evenings",
+    "duration": 180,
+    "albumArt": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop",
+    "audioUrl": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+    "playCount": 3200000,
+    "genre": "Indie"
+  },
+  {
+    "id": "5",
+    "title": "City Lights",
+    "artist": "Urban Flow",
+    "album": "Metro Beats",
+    "duration": 225,
+    "albumArt": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=300&h=300&fit=crop",
+    "audioUrl": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+    "playCount": 2100000,
+    "genre": "Hip Hop"
+  },
+  {
+    "id": "6",
+    "title": "Smooth Sailing",
+    "artist": "Jazz Collective",
+    "album": "Blue Note Sessions",
+    "duration": 270,
+    "albumArt": "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop",
+    "audioUrl": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+    "playCount": 890000,
+    "genre": "Jazz"
+  },
+  {
+    "id": "7",
+    "title": "Symphony No. 1",
+    "artist": "Classical Ensemble",
+    "album": "Timeless Pieces",
+    "duration": 420,
+    "albumArt": "https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=300&h=300&fit=crop",
+    "audioUrl": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+    "playCount": 650000,
+    "genre": "Classical"
+  },
+  {
+    "id": "8",
+    "title": "Soulful Nights",
+    "artist": "R&B Stars",
+    "album": "Velvet Voice",
+    "duration": 205,
+    "albumArt": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
+    "audioUrl": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+    "playCount": 1450000,
+    "genre": "R&B"
+  },
+  {
+    "id": "9",
+    "title": "Country Road",
+    "artist": "Mountain Ridge",
+    "album": "Southern Stories",
+    "duration": 190,
+    "albumArt": "https://images.unsplash.com/photo-1471478331149-c72f17e33c73?w=300&h=300&fit=crop",
+    "audioUrl": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+    "playCount": 980000,
+    "genre": "Country"
+  },
+  {
+    "id": "10",
+    "title": "Bass Drop",
+    "artist": "Electronic Pulse",
+    "album": "Future Sounds",
+    "duration": 255,
+    "albumArt": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=300&fit=crop",
+    "audioUrl": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+    "playCount": 2750000,
+    "genre": "Electronic"
+  },
+  {
+    "id": "11",
+    "title": "Heartbreak Avenue",
+    "artist": "Emotional Tides",
+    "album": "Deep Feelings",
+    "duration": 235,
+    "albumArt": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
+    "audioUrl": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+    "playCount": 1680000,
+    "genre": "Pop"
+  },
+  {
+    "id": "12",
+    "title": "Fire Storm",
+    "artist": "Rock Legends",
+    "album": "Metal Thunder",
+    "duration": 280,
+    "albumArt": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&h=300&fit=crop",
+    "audioUrl": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+    "playCount": 1340000,
+    "genre": "Rock"
+  },
+  {
+    "id": "13",
+    "title": "Street Anthem",
+    "artist": "Hip Hop Collective",
+    "album": "Underground Vibes",
+    "duration": 200,
+    "albumArt": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=300&h=300&fit=crop",
+    "audioUrl": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+    "playCount": 2200000,
+    "genre": "Hip Hop"
+  },
+  {
+    "id": "14",
+    "title": "Midnight Jazz",
+    "artist": "Smooth Quartet",
+    "album": "After Hours",
+    "duration": 310,
+    "albumArt": "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop",
+    "audioUrl": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+    "playCount": 720000,
+    "genre": "Jazz"
+  },
+  {
+    "id": "15",
+    "title": "Ocean Breeze",
+    "artist": "Indie Folk",
+    "album": "Natural Elements",
+    "duration": 175,
+    "albumArt": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop",
+    "audioUrl": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+    "playCount": 1120000,
+    "genre": "Indie"
+  }
+]

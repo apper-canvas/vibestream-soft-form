@@ -1,0 +1,66 @@
+[
+  {
+    "id": "1",
+    "name": "Today's Top Hits",
+    "coverImage": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
+    "songCount": 50,
+    "songs": ["1", "2", "4", "5", "10", "11"],
+    "description": "The biggest hits right now"
+  },
+  {
+    "id": "2",
+    "name": "Chill Vibes",
+    "coverImage": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop",
+    "songCount": 35,
+    "songs": ["4", "6", "8", "15"],
+    "description": "Relaxing music for any mood"
+  },
+  {
+    "id": "3",
+    "name": "Electronic Fusion",
+    "coverImage": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=300&fit=crop",
+    "songCount": 42,
+    "songs": ["2", "10"],
+    "description": "The best electronic beats"
+  },
+  {
+    "id": "4",
+    "name": "Rock Anthems",
+    "coverImage": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&h=300&fit=crop",
+    "songCount": 28,
+    "songs": ["3", "12"],
+    "description": "Classic and modern rock hits"
+  },
+  {
+    "id": "5",
+    "name": "Hip Hop Heat",
+    "coverImage": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=300&h=300&fit=crop",
+    "songCount": 33,
+    "songs": ["5", "13"],
+    "description": "The hottest hip hop tracks"
+  },
+  {
+    "id": "6",
+    "name": "Jazz Lounge",
+    "coverImage": "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop",
+    "songCount": 25,
+    "songs": ["6", "14"],
+    "description": "Smooth jazz for sophisticated listeners"
+  },
+  {
+    "id": "7",
+    "name": "Indie Discoveries",
+    "coverImage": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop",
+    "songCount": 38,
+    "songs": ["4", "15"],
+    "description": "Hidden gems from independent artists"
+  },
+  {
+    "id": "8",
+    "name": "R&B Classics",
+    "coverImage": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
+    "songCount": 30,
+    "songs": ["8"],
+    "description": "Timeless R&B favorites"
+  }
+]
