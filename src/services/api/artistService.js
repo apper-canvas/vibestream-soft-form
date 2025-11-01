@@ -135,5 +135,3 @@ class ArtistService {
 }
 
 export default new ArtistService()
-
-export default new ArtistService()

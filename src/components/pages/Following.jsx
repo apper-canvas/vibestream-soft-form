@@ -9,7 +9,6 @@ import Empty from "@/components/ui/Empty";
 import Error from "@/components/ui/Error";
 import ArtistCard from "@/components/molecules/ArtistCard";
 
-const Following = () => {
 function Following() {
   const user = useSelector((state) => state.user.profile)
   const [followedArtists, setFollowedArtists] = useState([])
@@ -21,12 +20,8 @@ function Following() {
       loadFollowedArtists()
     }
   }, [user])
-  const [followedArtists, setFollowedArtists] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
 
-
-const loadFollowedArtists = async () => {
+  const loadFollowedArtists = async () => {
     if (!user) return;
     
     try {
@@ -46,7 +41,7 @@ const loadFollowedArtists = async () => {
     toast.info(`Artist page for ${artist.name} coming soon!`)
   }
 
-const handleFollow = async (artist) => {
+  const handleFollow = async (artist) => {
     if (!user) return;
     
     try {
@@ -62,27 +57,13 @@ const handleFollow = async (artist) => {
   if (error) return <Error message={error} onRetry={loadFollowedArtists} />
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-4xl font-display font-bold text-white mb-2">
-              Following
-            </h1>
-            <p className="text-gray-400">
-              {followedArtists.length} {followedArtists.length === 1 ? "artist" : "artists"}
-
-  if (loading) return <Loading />
-  if (error) return <Error message={error} onRetry={loadFollowedArtists} />
-
-  return (
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
           <div className="flex items-center space-x-4 mb-4">
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
               <ApperIcon name="Users" size={32} className="text-white" />
@@ -92,37 +73,11 @@ const handleFollow = async (artist) => {
                 Following
               </h1>
               <p className="text-gray-400 mt-1">
-</p>
-          </div>
-        </div>
-      </motion.div>
-
-      {followedArtists.length === 0 ? (
-        <Empty
-          title="Not following anyone yet"
-          message="Discover and follow your favorite artists"
-          icon="Users"
-        />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {followedArtists.map((artist, index) => (
-            <motion.div
-              key={artist.Id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-            >
-              <ArtistCard
-                key={artist.Id}
-                artist={artist}
-                onViewArtist={() => handleViewArtist(artist)}
-                onFollow={() => handleFollow(artist)}
-                isFollowing={true}
-              />
+                {followedArtists.length} {followedArtists.length === 1 ? "artist" : "artists"}
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {followedArtists.length === 0 ? (
           <Empty
@@ -136,16 +91,20 @@ const handleFollow = async (artist) => {
             animate={{ opacity: 1, y: 0 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
           >
-            {followedArtists.map((artist) => (
-</motion.div>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
-
-export default Following
+            {followedArtists.map((artist, index) => (
+              <motion.div
+                key={artist.Id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+              >
+                <ArtistCard
+                  artist={artist}
+                  onViewArtist={() => handleViewArtist(artist)}
+                  onFollow={() => handleFollow(artist)}
+                  isFollowing={true}
+                />
+              </motion.div>
             ))}
           </motion.div>
         )}
@@ -153,3 +112,5 @@ export default Following
     </div>
   )
 }
+
+export default Following

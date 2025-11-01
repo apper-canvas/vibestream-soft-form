@@ -252,5 +252,3 @@ class SongService {
 }
 
 export default new SongService()
-
-export default new SongService()

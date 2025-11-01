@@ -57,5 +57,3 @@ class GenreService {
 }
 
 export default new GenreService()
-
-export default new GenreService()
